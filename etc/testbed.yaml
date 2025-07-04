@@ -1,0 +1,60 @@
+testbed:
+  name: VirtualEnv
+  alias: VENV
+  credentials:
+    default:
+      username: '%ENV{VENV_USER}'
+      password: '%ENV{VENV_USER_PASS}'
+    enable:
+      password: '%ENV{VENV_ENABLE_PASS}'
+devices:
+  rtr3-external:
+    os: ios
+    type: ios
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.178.240
+        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+    custom:
+      function: External RTR simulating Internet BGP connection
+  rtr1-gw:
+    os: ios
+    type: ios
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.178.241
+        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+    custom:
+      function: Internet GW router 1
+  rtr2-gw:
+    os: ios
+    type: ios
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.178.242
+        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+    custom:
+      function: Internet GW router 2
+  rtr7-inner:
+    os: ios
+    type: ios
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.178.244
+        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+    custom:
+      function: Inner Router 1
+  rtr5-inner:
+    os: ios
+    type: ios
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.178.245
+        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
+    custom:
+      function: Inner Router 2
