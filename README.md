@@ -69,16 +69,24 @@ devices:
 
 ---
 
-## ▶️ Run the MCP Server
+## ▶️ Integrate the MCP Server with your LLM interface
 
-Start the MCP server:
 
-```bash
-python app.py
+To connect your MCP tools to a local LLM (like [LM Studio](https://lmstudio.ai)), update the relevant mcp config file. 
+
+For instance, here is relevant config file for LM Studio
+```text
+{
+  "mcpServers": {
+    "network_mcp": {
+      "command": "/Users/user/venv_mcp/bin/python3",
+      "args": [
+        "/Users/user/network_mcp/network_mcp.py"
+      ]
+    }
+  }
+}
 ```
-
-The server will listen on:  
-`http://0.0.0.0:8000`
 
 ---
 

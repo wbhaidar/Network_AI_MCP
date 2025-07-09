@@ -8,7 +8,7 @@ testbed:
     enable:
       password: '%ENV{VENV_ENABLE_PASS}'
 devices:
-  rtr3-external:
+  rtr3:
     os: ios
     type: ios
     connections:
@@ -17,8 +17,8 @@ devices:
         ip: 192.168.178.240
         ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
     custom:
-      function: External RTR simulating Internet BGP connection
-  rtr1-gw:
+      function: Router 3
+  rtr1:
     os: ios
     type: ios
     connections:
@@ -27,8 +27,8 @@ devices:
         ip: 192.168.178.241
         ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
     custom:
-      function: Internet GW router 1
-  rtr2-gw:
+      function: Router 1
+  rtr2:
     os: ios
     type: ios
     connections:
@@ -37,8 +37,8 @@ devices:
         ip: 192.168.178.242
         ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
     custom:
-      function: Internet GW router 2
-  rtr7-inner:
+      function: Router 2
+  rtr4:
     os: ios
     type: ios
     connections:
@@ -47,14 +47,5 @@ devices:
         ip: 192.168.178.244
         ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
     custom:
-      function: Inner Router 1
-  rtr5-inner:
-    os: ios
-    type: ios
-    connections:
-      cli:
-        protocol: ssh
-        ip: 192.168.178.245
-        ssh_options: -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1
-    custom:
-      function: Inner Router 2
+      function: Router 4
+  

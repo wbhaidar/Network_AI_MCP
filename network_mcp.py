@@ -3,19 +3,24 @@ import asyncio
 from genie.testbed import load
 from genie.libs.parser.utils import get_parser
 from genie.metaparser.util.exceptions import SchemaEmptyParserError
-
+import os
 
 
 # Create an instance of the MCP server
 mcp = FastMCP("hello-world-server")
 
-# Configure the settings for remote access
+# Configure the settings for remote access -- only relevant when using SSE mode
 mcp.settings.host = "0.0.0.0"  # Bind to all network interfaces
 mcp.settings.port = 8000       # Specify the port
 
 
+# Dynamically build path relative to current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TESTBED_PATH = os.path.join(BASE_DIR, "etc", "testbed.yaml")
+
+
+
 # Load the pyATS testbed
-TESTBED_PATH = "etc/testbed.yaml"
 testbed = load(TESTBED_PATH)
 
 class DeviceConnectionManager:
@@ -50,29 +55,41 @@ def run_in_thread(func, *args, **kwargs):
 @mcp.tool()
 async def list_devices() -> dict:
     """
-    Return a list of devices defined in the pyATS testbed file.
+    Retrieve a list of devices from the network testbed.
+
+    This tool directly reads from the testbed YAML file loaded on the server.
+    The user does NOT need to provide the testbed file content. Simply call this
+    to retrieve all devices with metadata including OS, type, function, and management IP.
+
 
     Returns:
-        dict: A dictionary containing device names and various metadata, including:
-        device os: device operating system
-        type: Network device type
-        function: what function the network device has in the network
-        managment ip: the ip address used for management connectivity
+        dict: {
+            "devices": {
+                "<device_name>": {
+                    "os": "<Operating System>",
+                    "type": "<Device Type or Model>",
+                    "function": "<Device Role or Purpose>",
+                    "management_ip": "<IP Address for Management>"
+                },
+                ...
+            }
+        }
     """
+
     try:
         device_list = {}
         for device in testbed.devices.values():
 
             device_list[device.name]= {
-                'os': device.os, 
-                'type': device.type,
-                'function': device.custom.function,
-                'management ip': str(device.connections.cli.ip),
+                "os": device.os or "unknown", 
+                "type": device.type  or "unknown",
+                "function": getattr(device.custom, "function", "unknown"),
+                "management_ip": str(getattr(device.connections.cli, "ip", "unknown"))
                 }
 
         return {"devices": device_list}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": f"Failed to list devices: {str(e)}"}
 
 @mcp.tool()
 async def show_version(device_name: str) -> dict:
@@ -338,6 +355,9 @@ async def discover_neighbors_combined(device_name: str = "") -> dict:
 
 
 if __name__ == "__main__":
-    # Run the MCP server
-#     asyncio.run(mcp.run())
-    asyncio.run(mcp.run_sse_async())
+
+    # Run MCP server in Stdio mode
+    asyncio.run(mcp.run_stdio_async())
+
+    ## Run MCP Server in SSE mode
+    #asyncio.run(mcp.run_sse_async())
